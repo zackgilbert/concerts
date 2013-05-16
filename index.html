@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<title>Zack Gilbert's Life in Concert</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css" />
+<link rel="stylesheet" href="./bootstrap-custom.css">
+<link rel="stylesheet" href="./concerts.css">
+</head>
+<body>
+
+<div id="container" class="container-fluid">
+  <header>
+    <h1><span>Zack Gilbert's</span>Life in Concert*</h1>
+    <p>The following is a collection of most* of the music concerts I have attended in my life. It's been almost 15 years since I started going to shows. Growing up, they were a way to escape the monotonous small town life. Heading into the big city with friends to listen to our music and see our bands was often the only thing we had to look forward to for weeks at a time. Going to concerts was an escape. The music scene was an opportunity for people with similar hopes and fears to come together and enjoy the most universal of experiences: Music.</p>
+  </header>
+
+  <hr/>
+
+  <h3 id="concert-range">Currently Viewing: <span>-</span></h3>
+
+  <div id="concert-charts">
+    <div id="concert-date-chart" class="chart">
+    </div>
+  </div>
+
+  <div class="row-fluid">
+    <div id="filters" class="span3">
+      <!--<h3>Filters</h3>-->
+      <h4>While Living In:</h4>
+      <ul class="inline">
+        <li><a href="javascript:reset(0);" class="badge badge-important">All Places</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(1998, 06, 1), new Date(2002, 7, 27)]]);" class="badge badge-info">Gloversville, NY</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2002, 7, 28), new Date(2008, 7, 28)]]);" class="badge badge-info">Rochester, NY</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2008, 7, 29), new Date(2014, 0, 1)]]);" class="badge badge-info">Chicago, IL</a></li>
+      </ul>
+      <h4>By Year:</h4>
+      <ul class="inline">
+        <li><a href="javascript:reset(0);" class="badge badge-important">All Time</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(1998, 06, 1), new Date(2002, 0, 1)]]);" class="badge badge-info">2001 &amp; Before</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2001, 11, 31), new Date(2003, 0, 1)]]);" class="badge badge-info">2002</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2002, 11, 31), new Date(2004, 0, 1)]]);" class="badge badge-info">2003</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2003, 11, 31), new Date(2005, 0, 1)]]);" class="badge badge-info">2004</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2004, 11, 31), new Date(2006, 0, 1)]]);" class="badge badge-info">2005</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2005, 11, 31), new Date(2007, 0, 1)]]);" class="badge badge-info">2006</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2006, 11, 31), new Date(2008, 0, 1)]]);" class="badge badge-info">2007</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2007, 11, 31), new Date(2009, 0, 1)]]);" class="badge badge-info">2008</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2008, 11, 31), new Date(2010, 0, 1)]]);" class="badge badge-info">2009</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2009, 11, 31), new Date(2011, 0, 1)]]);" class="badge badge-info">2010</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2010, 11, 31), new Date(2012, 0, 1)]]);" class="badge badge-info">2011</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2011, 11, 31), new Date(2013, 0, 1)]]);" class="badge badge-info">2012</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2012, 11, 31), new Date(2014, 0, 1)]]);" class="badge badge-info">2013</a></li>
+      </ul>
+    </div>
+
+    <div id="concert-map" class="span9"></div>
+  </div>
+
+  <hr/>
+
+  <div id="stats-container" class="row-fluid">
+    <div id="stats-bands" class="stats-widget span6">
+      <h3>Most Frequently Seen Bands</h3>
+      <dl>
+        <dt>New Found Glory</dt>
+          <dd>11</dd>
+        <dt>The Movielife</dt>
+          <dd>10</dd>
+        <dt>Kevin Devine</dt>
+          <dd>10</dd>
+        <dt>The Rocket Summer</dt>
+          <dd>10</dd>
+        <dt>Coheed And Cambria</dt>
+          <dd>9</dd>
+      </dl>
+    </div>
+    <div id="stats-venues" class="stats-widget span6">
+      <h3>Most Frequented Venues</h3>
+      <dl>
+        <dt>Metro</dt>
+          <dd>20</dd>
+        <dt>Water Street Music Hall</dt>
+          <dd>19</dd>
+        <dt>Schubas</dt>
+          <dd>14</dd>
+        <dt>Subterranean</dt>
+          <dd>11</dd>
+        <dt>Beat Kitchen</dt>
+          <dd>10</dd>
+      </dl>
+    </div>
+  </div>
+
+  <hr/>
+
+  <aside id="concert-totals"><span id="concert-active">-</span> of <span id="concert-total">-</span> concerts showing.</aside>
+
+  <div id="concert-lists">
+    <table id="concert-list" class="list table table-striped table-bordered">
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div id="disclaimer">
+    <p>* Due to a computer hard drive failure in 2007, a large chunk of shows were lost. I have done my best, thanks to the help of countless friends, to put the list back together, but am no doubt missing a few. If you have any information about shows I might have attended or any corrections to the existing list, please don't hesitate to <a href="http://twitter.com/zackgilbert">notify me</a>.</p>
+  </div>
+
+</div>
+
+<footer>
+  &copy; 2013 <a href="http://www.zackgilbert.com">ZackGilbert.com</a> // <a href="http://twitter.com/zackgilbert">@zackgilbert</a> // Made with  ♥ in Chicago.
+</footer>
+
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src='http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.js'></script>
+<script src="./leaflet.markercluster-src.js"></script>
+<script src="http://square.github.io/crossfilter/crossfilter.v1.min.js"></script>
+<script src="http://square.github.io/crossfilter/d3.v3.min.js"></script>
+<script src="http://jquery-csv.googlecode.com/git/src/jquery.csv.js"></script>
+<script src="./barchart.js"></script>
+
+<script>
+
+  var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/93302/256/{z}/{x}/{y}.png',
+    cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 14, minZoom: 2, attribution: ''}),
+    latlng = new L.LatLng(45.0,-70.65);
+  var map = new L.Map('concert-map', {center: latlng, layers: [cloudmade]});
+  map.scrollWheelZoom.disable();
+  //var map = new L.mapbox.map('concert-map', 'zackgilbert.map-r14wp1gn').addControl(L.mapbox.geocoderControl('zackgilbert.map-r14wp1gn'));
+  var markers = new L.MarkerClusterGroup({ maxClusterRadius: 40, showCoverageOnHover: false, spiderfyOnMaxZoom: true });
+  var markersArray = [];
+
+  // Various formatters.
+  var formatMonth = d3.time.format.utc("%B, %Y"),
+      formatNumber = d3.format(",d"),
+      formatDate = d3.time.format.utc("%B %d, %Y");
+
+  $.get('concerts.csv', function(data) {
+    concerts = $.csv.toObjects(data);
+
+    // A little coercion, since the CSV is untyped.
+    concerts.forEach(function(d, i) {
+      d.index = i;
+      d.date = parseDate(d['date']);
+      d.title = d['title'].replace('&#x27;', "'").replace(/&amp;/g, '&');
+      d.bands = d['bands'].replace('&#x27;', "'").replace(/&amp;/g, '&').split("---");
+      d.venue = d['venue'].replace('&#x27;', "'").replace(/&amp;/g, '&');
+      d.lat = d['lat'];
+      d.lng = d['lng'];
+    });
+
+    // Create the crossfilter for the relevant dimensions and groups.
+    var concert = crossfilter(concerts),
+        all = concert.groupAll(),
+        day = concert.dimension(function(d) { return d.date }),
+        days = day.group(),
+        month = concert.dimension(function(d) { return d3.time.month(d.date) }),
+        months = month.group(),
+        venue = concert.dimension(function(d) { return d.venue; }),
+        venues = venue.group();
+
+    var firstDate = new Date(concerts[0].date);
+    firstDate.setMonth(firstDate.getMonth()-1);
+    firstDate.setDate(27);
+    var lastDate = new Date(concerts[concerts.length-1].date);
+    lastDate.setYear(lastDate.getFullYear()+1);
+    lastDate.setMonth(0);
+    lastDate.setDate(1);
+
+    charts = [
+
+      barChart()
+          .dimension(month)
+          .group(months)
+          //.round(d3.time.month.round)
+        .x(d3.time.scale()
+          .domain([firstDate, lastDate])
+          .rangeRound([0, 10 * 93]))
+          //.filter([concerts[0].date, concerts[concerts.length-1].date])
+
+    ];
+
+    // Given our array of charts, which we assume are in the same order as the
+    // .chart elements in the DOM, bind the charts to the DOM and render them.
+    // We also listen to the chart's brush events to update the display.
+    var chart = d3.selectAll(".chart")
+        .data(charts)
+        .each(function(chart) {
+          chart.on("brush", renderAll)
+               .on("brushend", function() { $('#filters ul li a').removeClass('badge-important').addClass('badge-info'); renderAll(); });
+        });
+
+    // Render the initial lists.
+    var list = d3.selectAll(".list")
+        .data([concertList]);
+
+    // Render the total.
+    d3.selectAll("#concert-total")
+        .text(formatNumber(concert.size()));
+
+    renderAll();
+
+    // Renders the specified chart or list.
+    function render(method) {
+      d3.select(this).call(method);
+    }
+
+    // Whenever the brush moves, re-rendering everything.
+    function renderAll() {
+      chart.each(render);
+      list.each(render);
+      setRange();
+      d3.select("#concert-active").text(formatNumber(all.value()));
+    }
+
+    // Like d3.time.format, but faster.
+    function parseDate(d) {
+      return new Date(d);
+    }
+
+    function setRange() {
+      //console.log(charts[0].extent());
+      //console.log(charts[0].x().domain());
+      var selected = charts[0].extent(),
+          total = charts[0].x().domain();
+
+      if ((selected[0].getMonth() == 11) && (selected[0].getDate() == 31) &&
+        (selected[1].getMonth() == 0) && (selected[1].getDate() == 1)) {
+        $('#concert-range span').html(selected[0].getFullYear()+1);
+      } else if (formatDate(selected[0]) == formatDate(selected[1])) {
+        $('#concert-range span').html(formatDate(selected[0]) + " to " + formatDate(total[1]));
+      } else {
+        $('#concert-range span').html(formatDate(selected[0]) + " to " + formatDate(selected[1]));
+      }
+    }
+
+    window.filter = function(elm, filters) {
+      $('#filters ul li a').removeClass('badge-important').addClass('badge-info');
+      $(elm).removeClass('badge-info').addClass('badge-important');
+      filters.forEach(function(d, i) {
+        charts[i].filter(d);
+      });
+      renderAll();
+      return false;
+    };
+
+    window.reset = function(i) {
+      $('#filters ul li a').removeClass('badge-important').addClass('badge-info');
+      $('#filters ul li:first-child a').removeClass('badge-info').addClass('badge-important');
+      charts[i].filter(null);
+      renderAll();
+    };
+
+    function concertList(div) {
+      var filteredConcerts = day.top(Infinity);
+
+      div.each(function() {
+
+        var concert = d3.select(this).select('tbody').selectAll(".concert")
+            .data(filteredConcerts, function(d) { return d.index; });
+
+        var concertEnter = concert.enter().append("tr")
+            .attr("class", "concert");
+
+        concertEnter.append("td")
+            .attr("class", "date")
+            .text(function(d) { return formatDate(d.date); });
+
+        concertEnter.append("td")
+            .attr("class", "bands")
+            .text(function(d) { return (d.title != d.bands.join(', ')) ? d.title + ': ' + d.bands.join(', ') : d.bands.join(', '); });
+
+        concertEnter.append("td")
+            .attr("class", "venue")
+            .text(function(d) { return d.venue; });
+
+        concert.exit().remove();
+
+        concert.order();
+      });
+
+      var bands = {};
+      markers.removeLayers(markersArray);
+      for (var i = 0; i < filteredConcerts.length; i++) {
+        for (var j = 0; j < filteredConcerts[i].bands.length; j++) {
+          bands[filteredConcerts[i].bands[j]] = (bands[filteredConcerts[i].bands[j]]) ? bands[filteredConcerts[i].bands[j]] + 1 : 1;
+        }
+
+        var title = '<b>' + formatDate(filteredConcerts[i].date) + '</b> - ' + filteredConcerts[i].venue + '<br/>';
+        if (filteredConcerts[i].title != filteredConcerts[i].bands.join(', ')) title += filteredConcerts[i].title + ': ';
+        title += filteredConcerts[i].bands.join(', ');
+        var marker = L.marker(new L.LatLng(filteredConcerts[i].lat, filteredConcerts[i].lng), {
+          icon: L.mapbox.marker.icon({'marker-symbol': 'star', 'marker-color': '5b8dd3'}),
+          title: title
+        });
+        marker.bindPopup(title);
+        markersArray.push(marker);
+        markers.addLayer(marker);
+      }
+      map.fitBounds(markers.getBounds());
+
+      var sortable = [];
+      for (var band in bands) sortable.push([band, bands[band]]);
+      var top_bands = sortable.sort(function(a, b) {return b[1] - a[1]}).slice(0,5);
+      var top_venues = venues.top(5);
+
+      $('#stats-bands dl').html('');
+      for (x in top_bands) {
+        if (top_bands[x][1] != '0')
+          $('#stats-bands dl').append('<dt>' + top_bands[x][0] + '</dt><dd>' + top_bands[x][1] + '</dd>');
+      }
+
+      $('#stats-venues dl').html('');
+      for (x in top_venues) {
+        if (top_venues[x].value != '0')
+          $('#stats-venues dl').append('<dt>' + top_venues[x].key + '</dt><dd>' + top_venues[x].value + '</dd>');
+      }
+    }
+
+    map.addLayer(markers);
+  });
+
+</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19216460-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

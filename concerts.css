@@ -1,0 +1,231 @@
+
+#container {
+  width: 960px;
+  margin: 40px auto;
+}
+
+a {
+  color: #2D6987;
+}
+
+
+  h1 {}
+
+    h1 span {
+      display: block;
+      font-size: 20px;
+      color:#2D6987;
+    }
+
+  .header{
+    font-size: 16px;
+    line-height: 28px;
+  }
+
+  #filters {
+    clear: both;
+    padding-bottom: 10px;
+  }
+
+    h3 {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 24px;
+      margin: 20px 0px;
+      text-align: center;
+    }
+
+      h3 span {
+        font-size: 24.5px;
+        font-weight: 700;
+        display: block;
+      }
+
+    h4 {
+      clear: both;
+      width: 200px;
+      font-weight: normal;
+    }
+
+    /*ul {
+      float: left;
+      clear: both;
+      list-style: none;
+    }
+
+      ul li {
+        float: left;
+        list-style: none;
+        margin: 0px 7px;
+      }*/
+
+    #concert-lists {
+      margin-bottom: 40px;
+    }
+
+    #disclaimer {
+      width: 900px;
+      margin: 0px auto;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+  footer {
+    background: #F0F0F0;
+    text-align: center;
+    margin-top: 40px;
+    border-top: 1px solid #e5e5e5;
+    padding: 40px;
+  }
+
+body > p {
+  line-height: 1.5em;
+  width: 640px;
+  text-rendering: optimizeLegibility;
+}
+
+#concert-map {
+  height: 400px;
+  border: 1px solid #ccc;
+}
+.leaflet-container a { text-indent: -99999px; }
+
+#concert-charts {
+  padding: 10px 0;
+}
+.chart {
+  display: inline-block;
+  height: 151px;
+  /*margin-bottom: 20px;*/
+}
+
+.reset {
+  padding-left: 1em;
+  font-size: smaller;
+  color: #ccc;
+}
+
+.background.bar {
+  fill: #BFCED5;
+}
+
+.foreground.bar {
+  fill: #b94a48;
+  /*stroke: #fff;*/
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.brush rect.extent {
+  fill: steelblue;
+  fill-opacity: .125;
+}
+
+.brush .resize path {
+  fill: #eee;
+  stroke: #666;
+}
+
+#concert-date-chart {
+  width: 960px;
+  margin: auto;
+}
+
+#stats-container {
+  margin: auto;
+}
+
+  .stats-widget {
+    padding: 0px 40px 20px;
+    margin-top: -20px;
+  }
+
+    .stats-widget dl {
+      clear: both;
+    }
+
+      .stats-widget dt {
+        clear: left;
+        float: left;
+        width: 350px;
+      }
+
+      .stats-widget dd {
+        float: left;
+        clear: right;
+        text-align: right;
+        width: 20px;
+      }
+
+aside {
+  font-size: smaller;
+  text-align: right;
+  clear: both;
+}
+
+
+#concert-list {
+  width: 960px;
+  margin: 20px auto;
+}
+
+#concert-list .concert {
+  line-height: 1.5em;
+}
+
+#concert-list .bands {
+  width: 470px;
+}
+#concert-list .venue {
+  width: 300px;
+}
+
+/* Cluster styles */
+.leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow {
+  -webkit-transition: -webkit-transform 0.2s ease-out, opacity 0.2s ease-in;
+  -moz-transition: -moz-transform 0.2s ease-out, opacity 0.2s ease-in;
+  -o-transition: -o-transform 0.2s ease-out, opacity 0.2s ease-in;
+  transition: transform 0.2s ease-out, opacity 0.2s ease-in;
+  }
+.marker-cluster-small {
+  background-color: rgba(181, 226, 140, 0.6);
+  }
+.marker-cluster-small div {
+  background-color: rgba(110, 204, 57, 0.6);
+  }
+.marker-cluster-medium {
+  background-color: rgba(241, 211, 87, 0.6);
+  }
+.marker-cluster-medium div {
+  background-color: rgba(240, 194, 12, 0.6);
+  }
+.marker-cluster-large {
+  background-color: rgba(253, 156, 115, 0.6);
+  }
+.marker-cluster-large div {
+  background-color: rgba(241, 128, 23, 0.6);
+  }
+.marker-cluster {
+  background-clip: padding-box;
+  border-radius: 20px;
+  }
+.marker-cluster div {
+  width: 30px;
+  height: 30px;
+  margin-left: 5px;
+  margin-top: 5px;
+  text-align: center;
+  border-radius: 15px;
+  font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
+  }
+.marker-cluster span {
+  line-height: 30px;
+  }
