@@ -3,12 +3,11 @@
 <meta charset="utf-8">
 <title>Zack Gilbert's Life in Concert</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css" />
-<link rel="stylesheet" href="./bootstrap-custom.css">
-<link rel="stylesheet" href="./concerts.css">
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css"/>
+<link rel="stylesheet" href="/concerts/bootstrap-custom.css">
+<link rel="stylesheet" href="/concerts/concerts.css">
 </head>
 <body>
-
 <div id="container" class="container-fluid">
   <header>
     <h1><span>Zack Gilbert's</span>Life in Concert*</h1>
@@ -32,7 +31,7 @@
         <li><a href="javascript:reset(0);" class="badge badge-important">All Places</a></li>
         <li><a href="#" onclick="return filter(this, [[new Date(1998, 06, 1), new Date(2002, 7, 27)]]);" class="badge badge-info">Gloversville, NY</a></li>
         <li><a href="#" onclick="return filter(this, [[new Date(2002, 7, 28), new Date(2008, 7, 28)]]);" class="badge badge-info">Rochester, NY</a></li>
-        <li><a href="#" onclick="return filter(this, [[new Date(2008, 7, 29), new Date(2014, 0, 1)]]);" class="badge badge-info">Chicago, IL</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2008, 7, 29), new Date(2016, 0, 1)]]);" class="badge badge-info">Chicago, IL</a></li>
       </ul>
       <h4>By Year:</h4>
       <ul class="inline">
@@ -50,6 +49,11 @@
         <li><a href="#" onclick="return filter(this, [[new Date(2010, 11, 31), new Date(2012, 0, 1)]]);" class="badge badge-info">2011</a></li>
         <li><a href="#" onclick="return filter(this, [[new Date(2011, 11, 31), new Date(2013, 0, 1)]]);" class="badge badge-info">2012</a></li>
         <li><a href="#" onclick="return filter(this, [[new Date(2012, 11, 31), new Date(2014, 0, 1)]]);" class="badge badge-info">2013</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2013, 11, 31), new Date(2015, 0, 1)]]);" class="badge badge-info">2014</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2014, 11, 31), new Date(2016, 0, 1)]]);" class="badge badge-info">2015</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2015, 11, 31), new Date(2017, 0, 1)]]);" class="badge badge-info">2016</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2016, 11, 31), new Date(2018, 0, 1)]]);" class="badge badge-info">2017</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2017, 11, 31), new Date(2019, 0, 1)]]);" class="badge badge-info">2018</a></li>
       </ul>
     </div>
 
@@ -108,20 +112,20 @@
 </div>
 
 <footer>
-  &copy; 2013 <a href="http://www.zackgilbert.com">ZackGilbert.com</a> // <a href="http://twitter.com/zackgilbert">@zackgilbert</a> // Made with  ♥ in Chicago.
+  &copy; 2013-2018 <a href="http://www.zackgilbert.com/">ZackGilbert.com</a> // <a href="http://twitter.com/zackgilbert">@zackgilbert</a> // Made with  ♥ in Chicago.
 </footer>
 
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src='http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.js'></script>
-<script src="./leaflet.markercluster-src.js"></script>
+<script src="http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.js"></script>
+<script src="/concerts/leaflet.markercluster-src.js"></script>
 <script src="http://square.github.io/crossfilter/crossfilter.v1.min.js"></script>
 <script src="http://square.github.io/crossfilter/d3.v3.min.js"></script>
-<script src="http://jquery-csv.googlecode.com/git/src/jquery.csv.js"></script>
-<script src="./barchart.js"></script>
+<script src="/concerts/jquery.csv.min.js"></script>
+<script src="/concerts/barchart.js"></script>
 
 <script>
 
-  var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/93302/256/{z}/{x}/{y}.png',
+  var cloudmadeUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
     cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 14, minZoom: 2, attribution: ''}),
     latlng = new L.LatLng(45.0,-70.65);
   var map = new L.Map('concert-map', {center: latlng, layers: [cloudmade]});
