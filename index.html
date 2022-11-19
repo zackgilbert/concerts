@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <title>Zack Gilbert's Life in Concert</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css"/>
+<link rel="stylesheet" href="https://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css"/>
 <link rel="stylesheet" href="./bootstrap-custom.css">
 <link rel="stylesheet" href="./concerts.css">
 </head>
@@ -122,16 +122,16 @@
 </footer>
 
 <script src="./jquery-1.9.1.js"></script>
-<script src="http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.js"></script>
+<script src="https://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.js"></script>
 <script src="./leaflet.markercluster-src.js"></script>
-<script src="http://square.github.io/crossfilter/crossfilter.v1.min.js"></script>
-<script src="http://square.github.io/crossfilter/d3.v3.min.js"></script>
+<script src="https://square.github.io/crossfilter/crossfilter.v1.min.js"></script>
+<script src="https://square.github.io/crossfilter/d3.v3.min.js"></script>
 <script src="./jquery.csv.min.js"></script>
 <script src="./barchart.js"></script>
 
 <script>
 
-  var cloudmadeUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+  var cloudmadeUrl = 'https://{s}.tile.osm.org/{z}/{x}/{y}.png',
     cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 14, minZoom: 2, attribution: ''}),
     latlng = new L.LatLng(45.0,-70.65);
   var map = new L.Map('concert-map', {center: latlng, layers: [cloudmade]});
