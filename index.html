@@ -4,14 +4,14 @@
 <title>Zack Gilbert's Life in Concert</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css"/>
-<link rel="stylesheet" href="/concerts/bootstrap-custom.css">
-<link rel="stylesheet" href="/concerts/concerts.css">
+<link rel="stylesheet" href="./bootstrap-custom.css">
+<link rel="stylesheet" href="./concerts.css">
 </head>
 <body>
 <div id="container" class="container-fluid">
   <header>
     <h1><span>Zack Gilbert's</span>Life in Concert*</h1>
-    <p>The following is a collection of most* of the music concerts I have attended in my life. It's been almost 15 years since I started going to shows. Growing up, they were a way to escape the monotonous small town life. Heading into the big city with friends to listen to our music and see our bands was often the only thing we had to look forward to for weeks at a time. Going to concerts was an escape. The music scene was an opportunity for people with similar hopes and fears to come together and enjoy the most universal of experiences: Music.</p>
+    <p>The following is a collection of most* of the music concerts I have attended in my life. It's been over 25 years since I started going to shows. Growing up, they were a way to escape the monotonous small town life. Heading into the big city with friends to listen to our music and see our bands was often the only thing we had to look forward to for weeks at a time. Going to concerts was an escape. The music scene was an opportunity for people with similar hopes and fears to come together and enjoy the most universal of experiences: Music.</p>
   </header>
 
   <hr/>
@@ -31,7 +31,7 @@
         <li><a href="javascript:reset(0);" class="badge badge-important">All Places</a></li>
         <li><a href="#" onclick="return filter(this, [[new Date(1998, 06, 1), new Date(2002, 7, 27)]]);" class="badge badge-info">Gloversville, NY</a></li>
         <li><a href="#" onclick="return filter(this, [[new Date(2002, 7, 28), new Date(2008, 7, 28)]]);" class="badge badge-info">Rochester, NY</a></li>
-        <li><a href="#" onclick="return filter(this, [[new Date(2008, 7, 29), new Date(2016, 0, 1)]]);" class="badge badge-info">Chicago, IL</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2008, 7, 29), new Date(2020, 0, 1)]]);" class="badge badge-info">Chicago, IL</a></li>
       </ul>
       <h4>By Year:</h4>
       <ul class="inline">
@@ -54,6 +54,7 @@
         <li><a href="#" onclick="return filter(this, [[new Date(2015, 11, 31), new Date(2017, 0, 1)]]);" class="badge badge-info">2016</a></li>
         <li><a href="#" onclick="return filter(this, [[new Date(2016, 11, 31), new Date(2018, 0, 1)]]);" class="badge badge-info">2017</a></li>
         <li><a href="#" onclick="return filter(this, [[new Date(2017, 11, 31), new Date(2019, 0, 1)]]);" class="badge badge-info">2018</a></li>
+        <li><a href="#" onclick="return filter(this, [[new Date(2018, 11, 31), new Date(2020, 0, 1)]]);" class="badge badge-info">2019</a></li>
       </ul>
     </div>
 
@@ -97,10 +98,14 @@
 
   <hr/>
 
-  <aside id="concert-totals"><span id="concert-active">-</span> of <span id="concert-total">-</span> concerts showing.</aside>
+  <aside id="concert-totals" class="pull-right"><span id="concert-active">-</span> of <span id="concert-total">-</span> concerts showing.</aside>
+
+  <div class="pull-left">
+    <input type="text" id="concert-filter" class="filter form-control" placeholder="Search"> <span id="concert-filter-clear" style="display: none;"><a href="javascript:void(0);" onclick="$('#concert-filter').val(''); $('#concert-filter').trigger('keyup'); return false;">(clear)</a></span>
+  </div>
 
   <div id="concert-lists">
-    <table id="concert-list" class="list table table-striped table-bordered">
+    <table id="concert-list" class="filterable list table table-striped table-bordered">
       <tbody></tbody>
     </table>
   </div>
@@ -112,16 +117,16 @@
 </div>
 
 <footer>
-  &copy; 2013-2018 <a href="http://www.zackgilbert.com/">ZackGilbert.com</a> // <a href="http://twitter.com/zackgilbert">@zackgilbert</a> // Made with  ♥ in Chicago.
+  &copy; 2013-2023 <a href="http://www.zackgilbert.com/">ZackGilbert.com</a> // <a href="http://twitter.com/zackgilbert">@zackgilbert</a> // Made with  ♥ in Chicago.
 </footer>
 
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="./jquery-1.9.1.js"></script>
 <script src="http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.js"></script>
-<script src="/concerts/leaflet.markercluster-src.js"></script>
+<script src="./leaflet.markercluster-src.js"></script>
 <script src="http://square.github.io/crossfilter/crossfilter.v1.min.js"></script>
 <script src="http://square.github.io/crossfilter/d3.v3.min.js"></script>
-<script src="/concerts/jquery.csv.min.js"></script>
-<script src="/concerts/barchart.js"></script>
+<script src="./jquery.csv.min.js"></script>
+<script src="./barchart.js"></script>
 
 <script>
 
@@ -139,6 +144,8 @@
       formatNumber = d3.format(",d"),
       formatDate = d3.time.format.utc("%B %d, %Y");
 
+  var list, chart, concert, all, day, days, month, months, venue, venues;
+
   $.get('concerts.csv', function(data) {
     concerts = $.csv.toObjects(data);
 
@@ -154,14 +161,15 @@
     });
 
     // Create the crossfilter for the relevant dimensions and groups.
-    var concert = crossfilter(concerts),
-        all = concert.groupAll(),
-        day = concert.dimension(function(d) { return d.date }),
-        days = day.group(),
-        month = concert.dimension(function(d) { return d3.time.month(d.date) }),
-        months = month.group(),
-        venue = concert.dimension(function(d) { return d.venue; }),
-        venues = venue.group();
+    concert = crossfilter(concerts),
+    all = concert.groupAll(),
+    day = concert.dimension(function(d) { return d.date }),
+    days = day.group(),
+    month = concert.dimension(function(d) { return d3.time.month(d.date) }),
+    months = month.group(),
+    venue = concert.dimension(function(d) { return d.venue; }),
+    venues = venue.group(),
+    search = concert.dimension(function(d) { return d.venue + "---" + d.title + "---" + d.bands.join("---"); });
 
     var firstDate = new Date(concerts[0].date);
     firstDate.setMonth(firstDate.getMonth()-1);
@@ -187,15 +195,15 @@
     // Given our array of charts, which we assume are in the same order as the
     // .chart elements in the DOM, bind the charts to the DOM and render them.
     // We also listen to the chart's brush events to update the display.
-    var chart = d3.selectAll(".chart")
-        .data(charts)
-        .each(function(chart) {
-          chart.on("brush", renderAll)
-               .on("brushend", function() { $('#filters ul li a').removeClass('badge-important').addClass('badge-info'); renderAll(); });
-        });
+    chart = d3.selectAll(".chart")
+      .data(charts)
+      .each(function(chart) {
+        chart.on("brush", renderAll)
+             .on("brushend", function() { $('#filters ul li a').removeClass('badge-important').addClass('badge-info'); renderAll(); });
+      });
 
     // Render the initial lists.
-    var list = d3.selectAll(".list")
+    list = d3.selectAll(".list")
         .data([concertList]);
 
     // Render the total.
@@ -204,139 +212,167 @@
 
     renderAll();
 
-    // Renders the specified chart or list.
-    function render(method) {
-      d3.select(this).call(method);
-    }
-
-    // Whenever the brush moves, re-rendering everything.
-    function renderAll() {
-      chart.each(render);
-      list.each(render);
-      setRange();
-      d3.select("#concert-active").text(formatNumber(all.value()));
-    }
-
-    // Like d3.time.format, but faster.
-    function parseDate(d) {
-      return new Date(d);
-    }
-
-    function setRange() {
-      //console.log(charts[0].extent());
-      //console.log(charts[0].x().domain());
-      var selected = charts[0].extent(),
-          total = charts[0].x().domain();
-
-      if ((selected[0].getMonth() == 11) && (selected[0].getDate() == 31) &&
-        (selected[1].getMonth() == 0) && (selected[1].getDate() == 1)) {
-        $('#concert-range span').html(selected[0].getFullYear()+1);
-      } else if (formatDate(selected[0]) == formatDate(selected[1])) {
-        $('#concert-range span').html(formatDate(selected[0]) + " to " + formatDate(total[1]));
-      } else {
-        $('#concert-range span').html(formatDate(selected[0]) + " to " + formatDate(selected[1]));
-      }
-    }
-
-    window.filter = function(elm, filters) {
-      $('#filters ul li a').removeClass('badge-important').addClass('badge-info');
-      $(elm).removeClass('badge-info').addClass('badge-important');
-      filters.forEach(function(d, i) {
-        charts[i].filter(d);
-      });
-      renderAll();
-      return false;
-    };
-
-    window.reset = function(i) {
-      $('#filters ul li a').removeClass('badge-important').addClass('badge-info');
-      $('#filters ul li:first-child a').removeClass('badge-info').addClass('badge-important');
-      charts[i].filter(null);
-      renderAll();
-    };
-
-    function concertList(div) {
-      var filteredConcerts = day.top(Infinity);
-
-      div.each(function() {
-
-        var concert = d3.select(this).select('tbody').selectAll(".concert")
-            .data(filteredConcerts, function(d) { return d.index; });
-
-        var concertEnter = concert.enter().append("tr")
-            .attr("class", "concert");
-
-        concertEnter.append("td")
-            .attr("class", "date")
-            .text(function(d) { return formatDate(d.date); });
-
-        concertEnter.append("td")
-            .attr("class", "bands")
-            .text(function(d) { return (d.title != d.bands.join(', ')) ? d.title + ': ' + d.bands.join(', ') : d.bands.join(', '); });
-
-        concertEnter.append("td")
-            .attr("class", "venue")
-            .text(function(d) { return d.venue; });
-
-        concert.exit().remove();
-
-        concert.order();
-      });
-
-      var bands = {};
-      markers.removeLayers(markersArray);
-      for (var i = 0; i < filteredConcerts.length; i++) {
-        for (var j = 0; j < filteredConcerts[i].bands.length; j++) {
-          bands[filteredConcerts[i].bands[j]] = (bands[filteredConcerts[i].bands[j]]) ? bands[filteredConcerts[i].bands[j]] + 1 : 1;
-        }
-
-        var title = '<b>' + formatDate(filteredConcerts[i].date) + '</b> - ' + filteredConcerts[i].venue + '<br/>';
-        if (filteredConcerts[i].title != filteredConcerts[i].bands.join(', ')) title += filteredConcerts[i].title + ': ';
-        title += filteredConcerts[i].bands.join(', ');
-        var marker = L.marker(new L.LatLng(filteredConcerts[i].lat, filteredConcerts[i].lng), {
-          icon: L.mapbox.marker.icon({'marker-symbol': 'star', 'marker-color': '5b8dd3'}),
-          title: title
-        });
-        marker.bindPopup(title);
-        markersArray.push(marker);
-        markers.addLayer(marker);
-      }
-      map.fitBounds(markers.getBounds());
-
-      var sortable = [];
-      for (var band in bands) sortable.push([band, bands[band]]);
-      var top_bands = sortable.sort(function(a, b) {return b[1] - a[1]}).slice(0,5);
-      var top_venues = venues.top(5);
-
-      $('#stats-bands dl').html('');
-      for (x in top_bands) {
-        if (top_bands[x][1] != '0')
-          $('#stats-bands dl').append('<dt>' + top_bands[x][0] + '</dt><dd>' + top_bands[x][1] + '</dd>');
-      }
-
-      $('#stats-venues dl').html('');
-      for (x in top_venues) {
-        if (top_venues[x].value != '0')
-          $('#stats-venues dl').append('<dt>' + top_venues[x].key + '</dt><dd>' + top_venues[x].value + '</dd>');
-      }
-    }
-
     map.addLayer(markers);
   });
 
+  // Renders the specified chart or list.
+  function render(method) {
+    d3.select(this).call(method);
+  }
+
+  // Whenever the brush moves, re-rendering everything.
+  function renderAll() {
+    chart.each(render);
+    list.each(render);
+    setRange();
+  }
+
+  // Like d3.time.format, but faster.
+  function parseDate(d) {
+    return new Date(d);
+  }
+
+  function setRange() {
+    //console.log(charts[0].extent());
+    //console.log(charts[0].x().domain());
+    var selected = charts[0].extent(),
+        total = charts[0].x().domain();
+
+    if ((selected[0].getMonth() == 11) && (selected[0].getDate() == 31) &&
+      (selected[1].getMonth() == 0) && (selected[1].getDate() == 1)) {
+      $('#concert-range span').html(selected[0].getFullYear()+1);
+    } else if (formatDate(selected[0]) == formatDate(selected[1])) {
+      $('#concert-range span').html(formatDate(selected[0]) + " to " + formatDate(total[1]));
+    } else {
+      $('#concert-range span').html(formatDate(selected[0]) + " to " + formatDate(selected[1]));
+    }
+  }
+
+  window.filter = function(elm, filters) {
+    $('#filters ul li a').removeClass('badge-important').addClass('badge-info');
+    $(elm).removeClass('badge-info').addClass('badge-important');
+    filters.forEach(function(d, i) {
+      charts[i].filter(d);
+    });
+    renderAll();
+    return false;
+  };
+
+  window.reset = function(i) {
+    $('#filters ul li a').removeClass('badge-important').addClass('badge-info');
+    $('#filters ul li:first-child a').removeClass('badge-info').addClass('badge-important');
+    charts[i].filter(null);
+    renderAll();
+  };
+
+  $('.filter').on('keyup', function(e) {
+    var query = this.value.toLowerCase();
+    search.filter(function(d) { 
+      if ( (query == '') || d.toLowerCase().indexOf(query.toLowerCase()) > -1 ) { 
+        return d; 
+      } 
+    });
+    if ( query === '' ) {
+      $('#concert-filter-clear').hide();
+    } else {
+      $('#concert-filter-clear').show();
+    }
+    renderAll();
+  });
+
+  function concertList(div) {
+    var filteredConcerts = day.top(Infinity);
+
+    d3.select("#concert-active").text(formatNumber(filteredConcerts.length));
+
+    div.each(function() {
+
+      var concert = d3.select(this).select('tbody').selectAll(".concert")
+          .data(filteredConcerts, function(d) { return d.index; });
+
+      var concertEnter = concert.enter().append("tr")
+          .attr("class", "concert");
+
+      concertEnter.append("td")
+          .attr("class", "date")
+          .text(function(d) { return formatDate(d.date); });
+
+      concertEnter.append("td")
+          .attr("class", "bands")
+          .html(function(d) { return (d.title != d.bands.join(', ')) ? d.title + ': ' + linkify(d.bands) : linkify(d.bands); });
+
+      concertEnter.append("td")
+          .attr("class", "venue")
+          .html(function(d) { return linkify([d.venue]); });
+
+      concert.exit().remove();
+
+      concert.order();
+    });
+
+    var bands = {};
+    markers.removeLayers(markersArray);
+    for (var i = 0; i < filteredConcerts.length; i++) {
+      for (var j = 0; j < filteredConcerts[i].bands.length; j++) {
+        bands[filteredConcerts[i].bands[j]] = (bands[filteredConcerts[i].bands[j]]) ? bands[filteredConcerts[i].bands[j]] + 1 : 1;
+      }
+
+      var title = formatDate(filteredConcerts[i].date) + ' - ' + filteredConcerts[i].venue + "\n";
+      var titleFormatted = '<b>' + formatDate(filteredConcerts[i].date) + '</b> - ' + filteredConcerts[i].venue + '<br/>';
+      if (filteredConcerts[i].title != filteredConcerts[i].bands.join(', ')) {
+        title += filteredConcerts[i].title + ': ';
+        titleFormatted += filteredConcerts[i].title + ': ';
+      }
+      titleFormatted += linkify(filteredConcerts[i].bands);
+      title += filteredConcerts[i].bands.join(', ');
+      var marker = L.marker(new L.LatLng(filteredConcerts[i].lat, filteredConcerts[i].lng), {
+        icon: L.mapbox.marker.icon({'marker-symbol': 'star', 'marker-color': '5b8dd3'}),
+        title: title
+      });
+      marker.bindPopup(titleFormatted);
+      markersArray.push(marker);
+      markers.addLayer(marker);
+    }
+    map.fitBounds(markers.getBounds());
+
+    var sortable = [];
+    for (var band in bands) sortable.push([band, bands[band]]);
+    var top_bands = sortable.sort(function(a, b) {return b[1] - a[1]}).slice(0,5);
+    var top_venues = venues.top(5);
+
+    $('#stats-bands dl').html('');
+    for (x in top_bands) {
+      if (top_bands[x][1] != '0') {
+        var b = top_bands[x][0];
+        var v = top_bands[x][1];
+        $('#stats-bands dl').append('<dt>' + linkify([b]) + '</dt><dd>' + v + '</dd>');
+      }
+    }
+
+    $('#stats-venues dl').html('');
+    for (x in top_venues) {
+      if (top_venues[x].value != '0') {
+        var b = top_venues[x].key;
+        var v = top_venues[x].value;
+        $('#stats-venues dl').append('<dt>' + linkify([b]) + '</dt><dd>' + v + '</dd>');
+      }
+    }
+  }
+
+  function linkify(bands) {
+    var formatted_bands = [];
+    for (x in bands) {
+      //if (bands[x].indexOf('<a href=') < 0) {
+        var band = bands[x];
+        formatted_bands[x] = '<a href="javascript:void();" onclick="$(\'#concert-filter\').val(\'' + band.replace('\'', "\\\'") + '\'); $(\'.filter\').trigger(\'keyup\'); return false;">' + band + '</a>';
+      //}
+    }
+    return formatted_bands.join(', ');
+  }
+
 </script>
-<script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-19216460-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
+<!-- Fathom - beautiful, simple website analytics -->
+<script src="https://cdn.usefathom.com/script.js" data-site="SEGRUNSC" defer></script>
+<!-- / Fathom -->
 </body>
 </html>
